@@ -33,7 +33,7 @@ const MobilePlayerContainer = () => {
 		<>
 			<div
 				onClick={() => setIsExpanded(true)}
-				className="absolute w-full bottom-20 px-2"
+				className="fixed left-0 right-0 bottom-20 px-2 z-40"
 			>
 				<MiniPlayer />
 			</div>

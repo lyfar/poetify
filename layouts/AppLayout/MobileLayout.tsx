@@ -18,7 +18,7 @@ const MobileLayout = ({ children }: { children: React.ReactNode }) => {
 				{children}
 			</div>
 			<MobilePlayerContainer />
-			<div className="absolute bottom-0 w-full h-20 pb-[env(safe-area-inset-bottom)]">
+			<div className="fixed bottom-0 left-0 right-0 h-20 pb-[env(safe-area-inset-bottom)] z-40">
 				<TabBar />
 			</div>
 		</div>
