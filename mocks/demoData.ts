@@ -206,7 +206,7 @@ const demoArtistById = Object.fromEntries(
 const demoTrackSeeds: DemoTrackSeed[] = [
 	{
 		id: 'poetify-track-heart-shaped-box-cover',
-		name: 'Heart-Shaped Box (cover by Nirvana)',
+		name: 'Heart-Shaped Box — Nirvana',
 		artistId: 'poetify-artist-nirvana',
 		duration_ms: 142840,
 		explicit: false,
@@ -214,7 +214,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-moonlight-cover',
-		name: 'Moonlight (XXXTENTACION cover by Nirvana)',
+		name: 'Moonlight (XXXTENTACION) — Nirvana',
 		artistId: 'poetify-artist-nirvana',
 		duration_ms: 142680,
 		explicit: true,
@@ -222,7 +222,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-revenge-cover',
-		name: 'Revenge (XXXTENTACION cover by Nirvana)',
+		name: 'Revenge (XXXTENTACION) — Nirvana',
 		artistId: 'poetify-artist-nirvana',
 		duration_ms: 150960,
 		explicit: true,
@@ -230,7 +230,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-shimmy-cover',
-		name: 'Shimmy Shimmy Ya (Ol’ Dirty Bastard cover by Janis Joplin)',
+		name: 'Shimmy Shimmy Ya (Ol’ Dirty Bastard) — Janis Joplin',
 		artistId: 'poetify-artist-janis',
 		duration_ms: 294920,
 		explicit: true,
@@ -238,7 +238,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-all-along-the-watchtower-cover',
-		name: 'All Along the Watchtower (Jimi Hendrix cover by MF DOOM)',
+		name: 'All Along the Watchtower (Jimi Hendrix) — MF DOOM',
 		artistId: 'poetify-artist-mf-doom',
 		duration_ms: 134600,
 		explicit: false,
@@ -246,7 +246,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-blue-suede-shoes-cover',
-		name: 'Blue Suede Shoes (Elvis Presley cover by The Prodigy)',
+		name: 'Blue Suede Shoes (Elvis Presley) — The Prodigy',
 		artistId: 'poetify-artist-the-prodigy',
 		duration_ms: 343680,
 		explicit: false,
@@ -254,7 +254,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-cry-baby-cover',
-		name: 'Cry Baby (Janis Joplin cover by MF DOOM)',
+		name: 'Cry Baby (Janis Joplin) — MF DOOM',
 		artistId: 'poetify-artist-mf-doom',
 		duration_ms: 187040,
 		explicit: false,
@@ -262,7 +262,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 		{
 			id: 'poetify-track-hippa-to-da-hoppa-cover',
-			name: 'Hippa to Da Hoppa (Ol’ Dirty Bastard cover by Joy Division)',
+			name: 'Hippa to Da Hoppa (Ol’ Dirty Bastard) — Joy Division',
 			artistId: 'poetify-artist-joy-division',
 			duration_ms: 226600,
 		explicit: false,
@@ -270,7 +270,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-i-love-rock-n-roll-cover',
-		name: "I Love Rock ’n Roll (Joan Jett and the Blackhearts cover by MF DOOM)",
+		name: "I Love Rock ’n Roll (Joan Jett and the Blackhearts) — MF DOOM",
 		artistId: 'poetify-artist-mf-doom',
 		duration_ms: 202720,
 		explicit: false,
@@ -279,7 +279,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-i-want-it-that-way-cover',
-		name: 'I Want It That Way (Backstreet Boys cover by MF DOOM)',
+		name: 'I Want It That Way (Backstreet Boys) — MF DOOM',
 		artistId: 'poetify-artist-mf-doom',
 		duration_ms: 167960,
 		explicit: false,
@@ -287,7 +287,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-jamming-cover',
-		name: 'Jamming (Bob Marley & The Wailers cover by Queen)',
+		name: 'Jamming (Bob Marley & The Wailers) — Queen',
 		artistId: 'poetify-artist-queen',
 		duration_ms: 259480,
 		explicit: false,
@@ -295,7 +295,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-out-of-space-cover',
-		name: 'Out of Space (The Prodigy cover by Queen)',
+		name: 'Out of Space (The Prodigy) — Queen',
 		artistId: 'poetify-artist-queen',
 		duration_ms: 478760,
 		explicit: false,
@@ -303,7 +303,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-rapp-snitch-knishes-cover',
-		name: 'Rapp Snitch Knishes (MF DOOM cover by Janis Joplin)',
+		name: 'Rapp Snitch Knishes (MF DOOM) — Janis Joplin',
 		artistId: 'poetify-artist-janis',
 		duration_ms: 349080,
 		explicit: false,
@@ -311,7 +311,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-riders-on-the-storm-cover',
-		name: 'Riders on the Storm (The Doors cover by MF DOOM)',
+		name: 'Riders on the Storm (The Doors) — MF DOOM',
 		artistId: 'poetify-artist-mf-doom',
 		duration_ms: 171480,
 		explicit: false,
@@ -319,7 +319,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 		{
 			id: 'poetify-track-were-rolling-suicide',
-			name: 'We\'re rolling "Suicide" (System of a Down cover by MF DOOM)',
+			name: 'We\'re rolling "Suicide" (System of a Down) — MF DOOM',
 			artistId: 'poetify-artist-mf-doom',
 			duration_ms: 146880,
 			explicit: false,
@@ -327,7 +327,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 		},
 	{
 		id: 'poetify-track-den-rozhdeniya-cover',
-		name: 'День рождения (Birthday) (Ленинград cover by Janis Joplin)',
+		name: 'День рождения (Birthday) (Ленинград) — Janis Joplin',
 		artistId: 'poetify-artist-janis',
 		duration_ms: 196920,
 		explicit: false,
@@ -335,7 +335,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-intro-griby-cover-v2',
-		name: 'Интро (Intro) (Грибы (Griby) cover by Nirvana) (v2)',
+		name: 'Интро (Intro) (Грибы (Griby)) — Nirvana (v2)',
 		artistId: 'poetify-artist-nirvana',
 		duration_ms: 189400,
 		explicit: false,
@@ -343,7 +343,7 @@ const demoTrackSeeds: DemoTrackSeed[] = [
 	},
 	{
 		id: 'poetify-track-intro-griby-cover',
-		name: 'Интро (Intro) (Грибы (Griby) cover by Nirvana)',
+		name: 'Интро (Intro) (Грибы (Griby)) — Nirvana',
 		artistId: 'poetify-artist-nirvana',
 		duration_ms: 204840,
 		explicit: false,
