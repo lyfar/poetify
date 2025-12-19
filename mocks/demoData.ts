@@ -14,6 +14,9 @@ import type {
 
 import { withBasePath } from '@/utils/basePath';
 
+const DEMO_RELEASE_DATE = '2025-12-24';
+const DEMO_DATE_ISO = '2025-12-24T12:00:00.000Z';
+
 const createImages = (baseUrl: string) => {
 	if (baseUrl.startsWith('/')) {
 		const resolvedUrl = withBasePath(baseUrl);
@@ -381,7 +384,7 @@ const createArtistAlbum = ({
 		id: albumId,
 		images: createImages(albumCoverPath(albumId)),
 		name: `POETIFY x ${stripArtistSuffix(artist.name)}`,
-		release_date: '2024-12-19',
+		release_date: DEMO_RELEASE_DATE,
 		release_date_precision: 'day',
 		type: 'album',
 		uri: `poetify:album:${albumId}`,
@@ -447,8 +450,8 @@ export const demoTracks: DemoTrack[] = (() => {
 
 export const DEMO_PLAYLIST_URI = 'poetify:playlist:demo-playlist';
 
-const playlistItems: SpotifyPlaylistItem[] = demoTracks.map((track, idx) => ({
-	added_at: new Date(Date.now() - idx * 3600 * 1000).toISOString(),
+const playlistItems: SpotifyPlaylistItem[] = demoTracks.map((track) => ({
+	added_at: DEMO_DATE_ISO,
 	added_by: {
 		external_urls: { spotify: '/user/demo-user' },
 		href: '/api/demo/users/demo-user',
@@ -495,21 +498,21 @@ export const demoPlaylist: SpotifyPlaylist = {
 };
 
 export const demoLibraryAlbums: SpotifyLibraryAlbum[] = demoAlbums.map(
-	(album: SpotifyAlbum, idx: number) => ({
-		added_at: new Date(Date.now() - idx * 86400000).toISOString(),
+	(album: SpotifyAlbum) => ({
+		added_at: DEMO_DATE_ISO,
 		album: sanitizeAlbum(album),
 	})
 );
 
 export const demoLikedSongs: SpotifyLibraryLikedSong[] = demoTracks.map(
-	(track, idx) => ({
-		added_at: new Date(Date.now() - idx * 7200 * 1000).toISOString(),
+	(track) => ({
+		added_at: DEMO_DATE_ISO,
 		track,
 	})
 );
 
 export const demoRecentlyPlayed: SpotifyRecentlyPlayedItem[] = demoTracks.map(
-	(track, idx) => ({
+	(track) => ({
 		track,
 		context: {
 			type: 'playlist',
@@ -517,7 +520,7 @@ export const demoRecentlyPlayed: SpotifyRecentlyPlayedItem[] = demoTracks.map(
 			external_urls: { spotify: '/playlist/demo-playlist' },
 			uri: DEMO_PLAYLIST_URI,
 		},
-		played_at: new Date(Date.now() - idx * 5400 * 1000).toISOString(),
+		played_at: DEMO_DATE_ISO,
 	})
 );
 

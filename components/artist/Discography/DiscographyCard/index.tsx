@@ -29,7 +29,7 @@ const DiscographyCard = ({
 		>
 			<div>
 				<span className="after:content-['•'] after:mx-1">
-					{dayjs(releaseDate).year()}
+					{dayjs(releaseDate).format('MMMM D YYYY')}
 				</span>
 
 				{artists && artists?.length > 0 ? (

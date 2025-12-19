@@ -12,7 +12,7 @@ const useFormattedDate = (
 			return;
 		}
 		return precision === 'day'
-			? dayjs(date).format('D MMMM YYYY')
+			? dayjs(date).format('MMMM D YYYY')
 			: dayjs(date).year();
 	}, [date, precision]);
 };

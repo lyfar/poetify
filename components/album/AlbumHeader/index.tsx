@@ -52,7 +52,7 @@ const AlbumHeader = ({
 				</div>
 				<div className="text-xs md:text-sm flex items-center">
 					<div className="md:before:content-['•'] md:before:mx-1 text-neutral-300">
-						<span>{dayjs(releaseDate).year()}</span>
+						<span>{dayjs(releaseDate).format('MMMM D YYYY')}</span>
 					</div>
 					<div className="before:content-['•'] before:mx-1 text-neutral-300">
 						<span>

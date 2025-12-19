@@ -88,12 +88,7 @@ const TracklistItem = ({
 		if (!addedAt) {
 			return;
 		}
-		const weeksAgo = dayjs().diff(dayjs(addedAt), 'weeks');
-		return weeksAgo > 4
-			? dayjs(addedAt).format('D MMM YYYY')
-			: weeksAgo >= 1
-			? `${weeksAgo} week${weeksAgo > 1 ? 's' : ''} ago`
-			: dayjs(addedAt).fromNow();
+		return dayjs(addedAt).format('MMMM D YYYY');
 	}, [addedAt]);
 
 	const handleSingleTapPlay = (e: React.MouseEvent<HTMLDivElement>) => {
