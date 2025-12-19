@@ -1,25 +1,79 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { HiMiniMagnifyingGlass } from 'react-icons/hi2';
 
-const SearchBar = ({ value = '' }: { value?: string }) => {
-	const [query, setQuery] = useState(value);
+const SEARCH_PATH = '/search';
+
+const normalizePathname = (pathname: string | null) =>
+	(pathname ?? '').replace(/\/$/, '');
+
+const getQueryFromWindow = () => {
+	if (typeof window === 'undefined') {
+		return '';
+	}
+	try {
+		return (new URLSearchParams(window.location.search).get('query') ?? '').trim();
+	} catch {
+		return '';
+	}
+};
+
+const SearchBar = ({ value }: { value?: string }) => {
+	const [query, setQuery] = useState(value ?? '');
 	const router = useRouter();
+	const pathname = usePathname();
+	const normalizedPathname = normalizePathname(pathname);
+	const isSearchPage = normalizedPathname.endsWith(SEARCH_PATH);
 
 	useEffect(() => {
-		setQuery(value);
-	}, [value]);
+		if (typeof value === 'string') {
+			setQuery(value);
+			return;
+		}
+
+		if (isSearchPage) {
+			setQuery(getQueryFromWindow());
+		}
+	}, [value, isSearchPage]);
 
 	const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const normalized = query.trim();
 		if (!normalized) {
-			router.push('/search');
+			router.push(SEARCH_PATH);
 			return;
 		}
-		router.push(`/search?query=${encodeURIComponent(normalized)}`);
+		router.push(`${SEARCH_PATH}?query=${encodeURIComponent(normalized)}`);
+	};
+
+	useEffect(() => {
+		const normalized = query.trim();
+		if (!isSearchPage) {
+			return;
+		}
+
+		const queryFromUrl = getQueryFromWindow();
+		if (normalized === queryFromUrl) {
+			return;
+		}
+
+		const timer = window.setTimeout(() => {
+			if (!normalized) {
+				router.replace(SEARCH_PATH);
+				return;
+			}
+			router.replace(`${SEARCH_PATH}?query=${encodeURIComponent(normalized)}`);
+		}, 200);
+
+		return () => window.clearTimeout(timer);
+	}, [query, isSearchPage, pathname, router]);
+
+	const handleFocus = () => {
+		if (!isSearchPage) {
+			router.push(SEARCH_PATH);
+		}
 	};
 
 	return (
@@ -39,6 +93,7 @@ const SearchBar = ({ value = '' }: { value?: string }) => {
 				value={query}
 				className="truncate text-black lg:text-white transition-all duration-200 rounded-md lg:rounded-full bg-white lg:bg-neutral-800 h-full w-full lg:focus:w-96 lg:w-96 pl-11 font-funnel text-sm font-medium placeholder-spotify-black lg:placeholder-neutral-400 focus:outline-none focus:ring-2 lg:focus:ring-white focus:border-transparent lg:group-hover:bg-neutral-700"
 				type="text"
+				onFocus={handleFocus}
 				onChange={(e) => setQuery(e.target.value)}
 			/>
 		</form>
