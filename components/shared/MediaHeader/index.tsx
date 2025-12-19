@@ -1,9 +1,13 @@
+'use client';
 import React from 'react';
 
 import HeroHeader from '../HeroHeader';
 import CollectionControls from '@/components/collection/CollectionControls';
 
-import type { SpotifyAlbumType } from '@/types/spotify';
+import { useAppSelector } from '@/redux/hooks';
+import { getNowPlaying } from '@/redux/slices/playerSlice';
+
+import type { SpotifyAlbumType, SpotifyArtist } from '@/types/spotify';
 
 const MediaHeader = ({
 	imageUrl,
@@ -28,9 +32,23 @@ const MediaHeader = ({
 	children?: React.ReactNode;
 	actions?: React.ReactNode;
 }) => {
+	const { item, context, hasInteracted = false } = useAppSelector(getNowPlaying);
+	const nowPlayingImageUrl = item?.album?.images?.[0]?.url;
+	const nowPlayingContextUri = context?.uri;
+	const isNowPlayingInThisContext =
+		nowPlayingContextUri === contextUri ||
+		(type === 'artist' &&
+			!!item?.artists?.some(
+				(artist: SpotifyArtist) => artist.uri === contextUri
+			));
+	const resolvedImageUrl =
+		hasInteracted && nowPlayingImageUrl && isNowPlayingInThisContext
+			? nowPlayingImageUrl
+			: imageUrl;
+
 	return (
 		<HeroHeader
-			imageUrl={imageUrl}
+			imageUrl={resolvedImageUrl}
 			actions={
 				<>
 					<CollectionControls contextUri={contextUri} />

@@ -1,22 +1,22 @@
 {
-	"name": "musicmate-enhanced",
+	"name": "poetify",
 	"version": "1.0.0",
-	"description": "A web-based Spotify clone.",
+	"description": "A Spotify-like demo UI (no Spotify integration).",
 	"private": true,
-	"author": "James Michael",
+	"author": "Poetify",
 	"scripts": {
 		"type-check": "tsc --noEmit",
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint",
+		"generate:images": "node scripts/generate-poetify-images.mjs",
 		"prepare": "husky",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
 	},
 	"dependencies": {
 		"@reduxjs/toolkit": "^2.9.0",
-		"axios": "^1.12.2",
 		"dayjs": "^1.11.18",
 		"he": "^1.2.0",
 		"motion": "^12.23.22",
@@ -28,7 +28,8 @@
 		"react-infinite-scroller": "^1.2.6",
 		"react-redux": "^9.2.0",
 		"react-seekbar": "^0.1.4",
-		"react-toastify": "^11.0.5"
+		"react-toastify": "^11.0.5",
+		"replicate": "^1.4.0"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",

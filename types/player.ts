@@ -30,4 +30,5 @@ export interface PlayerState {
 	isReady: boolean;
 	playbackState: SpotifyPlaybackState | TempPlaybackState | null;
 	isLoading: boolean;
+	hasInteracted: boolean;
 }

@@ -9,6 +9,7 @@ import useInfiniteScroll from '@/hooks/shared/useInfiniteScroll';
 import useLikedSongs from '@/hooks/library/useLikedSongs';
 
 import { useAppSelector } from '@/redux/hooks';
+import { withBasePath } from '@/utils/basePath';
 
 const LikedSongs = () => {
 	const { likedSongs, fetchPaginatedLikedSongs } = useLikedSongs();
@@ -24,14 +25,14 @@ const LikedSongs = () => {
 	}
 
 	return (
-		<InfiniteScrollContainer hasMore={hasMore} next={loadMore}>
-			<PlaylistHeader
-				isLikedSongs={true}
-				imageUrl="/liked-songs-300.jpg"
-				contextUri={`${user.uri}:collection`}
-				name="Liked Songs"
-				owner={{ id: user.id!, displayName: user.displayName }}
-				totalTracks={likedSongs.pagination.total}
+			<InfiniteScrollContainer hasMore={hasMore} next={loadMore}>
+				<PlaylistHeader
+					isLikedSongs={true}
+					imageUrl={withBasePath('/liked-songs-300.jpg')}
+					contextUri={`${user.uri}:collection`}
+					name="Liked Songs"
+					owner={{ id: user.id!, displayName: user.displayName }}
+					totalTracks={likedSongs.pagination.total}
 			/>
 			<CollectionTracklist
 				type="playlist"

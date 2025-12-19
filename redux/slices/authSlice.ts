@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 import type { AuthState } from '@/types/auth';
 
@@ -8,7 +7,7 @@ const initialState: AuthState = {
 };
 
 export const logOut = createAsyncThunk('auth/logOut', async () => {
-	await axios.post('/api/logout');
+	return { success: true };
 });
 
 export const preloadedAuthState = (

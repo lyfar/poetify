@@ -10,7 +10,7 @@ const ArtistResults = ({
 }: {
 	artists: SpotifyPaginatedResponse<SpotifyArtist>;
 }) => {
-	const { items, ...paginationData } = artists;
+	const { items } = artists;
 	return (
 		<ItemGrid
 			items={items}

@@ -1,25 +1,26 @@
 import React from 'react';
-import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-import { fetchUser } from '@/services/spotify';
+import { demoUser } from '@/mocks/demoData';
 
 import UserContainer from '@/components/user/UserContainer';
 
-import type { SpotifyUser } from '@/types/spotify';
+export const dynamicParams = false;
+
+export const generateStaticParams = async () => [{ id: demoUser.id }];
 
 const User = async ({ params }: { params: Promise<{ id: string }> }) => {
 	const { id } = await params;
-	const cookieStore = await cookies();
-	const accessToken = cookieStore.get('access_token')!.value;
-
-	const user: SpotifyUser = await fetchUser(id, accessToken);
+	if (id !== demoUser.id) {
+		redirect('/');
+	}
 
 	return (
 		<UserContainer
-			id={user.id}
-			imageUrl={user.images?.[0]?.url}
-			displayName={user.display_name}
-			followers={user.followers}
+			id={demoUser.id}
+			imageUrl={demoUser.images?.[0]?.url}
+			displayName={demoUser.display_name}
+			followers={demoUser.followers}
 		/>
 	);
 };

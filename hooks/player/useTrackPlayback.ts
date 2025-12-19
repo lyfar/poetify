@@ -10,6 +10,7 @@ import {
 } from '@/redux/slices/playerSlice';
 
 import { showToast } from '@/utils/toast';
+import { DEMO_MODE } from '@/utils/demo';
 
 const useTrackPlayback = ({
 	trackId,
@@ -33,6 +34,7 @@ const useTrackPlayback = ({
 	} = useAppSelector(getNowPlaying);
 	const userHasPremium = useAppSelector(isUserPremium);
 	const { deviceId: localDeviceId } = useAppSelector((state) => state.player);
+	const canPlay = DEMO_MODE || userHasPremium;
 
 	const isActiveTrack =
 		itemNowPlaying?.id === trackId && context?.uri === contextUri;
@@ -42,7 +44,7 @@ const useTrackPlayback = ({
 	const activeDeviceId = isActive && isExternal ? device.id : localDeviceId;
 
 	const playTrack = useCallback(async () => {
-		if (!userHasPremium) {
+		if (!canPlay) {
 			showToast('Requires Spotify Premium.');
 			return;
 		}
@@ -50,7 +52,7 @@ const useTrackPlayback = ({
 			play({
 				deviceId: activeDeviceId,
 				contextUri,
-				...(position
+				...(typeof position === 'number'
 					? { offset: { position } }
 					: uri
 					? { offset: { uri } }
@@ -61,7 +63,7 @@ const useTrackPlayback = ({
 			setTimeout(() => dispatch(fetchPlaybackState()), 500);
 		}
 	}, [
-		userHasPremium,
+		canPlay,
 		activeDeviceId,
 		isActive,
 		isExternal,
@@ -74,12 +76,12 @@ const useTrackPlayback = ({
 	]);
 
 	const pauseTrack = useCallback(() => {
-		if (!userHasPremium) {
+		if (!canPlay) {
 			showToast('Requires Spotify Premium.');
 			return;
 		}
 		dispatch(pause(activeDeviceId));
-	}, [userHasPremium, activeDeviceId, dispatch]);
+	}, [canPlay, activeDeviceId, dispatch]);
 
 	return { isNowPlaying, isActiveTrack, playTrack, pauseTrack };
 };

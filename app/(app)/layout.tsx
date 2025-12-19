@@ -1,12 +1,8 @@
 import '../globals.css';
 
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import axios from 'axios';
-
 import AppLayout from '@/layouts/AppLayout';
 
-import { fetchCurrentUser } from '@/services/spotify';
+import { demoUser } from '@/mocks/demoData';
 
 import StoreProvider from '@/redux/StoreProvider';
 import { preloadedAuthState } from '@/redux/slices/authSlice';
@@ -17,22 +13,7 @@ export default async function Layout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const cookieStore = await cookies();
-	const accessToken = cookieStore.get('access_token')?.value;
-	let currentUser = null;
-
-	if (!accessToken) {
-		redirect('/login');
-	}
-
-	try {
-		currentUser = await fetchCurrentUser(accessToken);
-	} catch (error) {
-		if (axios.isAxiosError(error) && error.response?.status === 403) {
-			redirect('/unauthorised');
-		}
-		redirect('/login');
-	}
+	const currentUser = demoUser;
 
 	return (
 		<StoreProvider

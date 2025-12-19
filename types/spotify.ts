@@ -135,6 +135,7 @@ export interface SpotifyTrack {
 	id: string;
 	is_playable: boolean;
 	name: string;
+	preview_url: string | null;
 	track_number: number;
 	type: 'track';
 	uri: string;

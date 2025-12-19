@@ -1,7 +1,5 @@
 import React from 'react';
-import { cookies } from 'next/headers';
-
-import { DISCOGRAPHY_GROUPS } from '@/constants/discography';
+import { redirect } from 'next/navigation';
 
 import ArtistHeader from '@/components/artist/ArtistHeader';
 import ArtistTopTracks from '@/components/artist/ArtistTopTracks';
@@ -9,35 +7,67 @@ import FeaturedItem from '@/components/artist/FeaturedItem';
 import Discography from '@/components/artist/Discography';
 
 import {
-	fetchArtistAlbums,
-	fetchArtistById,
-	fetchArtistTopTracks,
-} from '@/services/spotify';
+	demoAlbums,
+	demoArtists,
+	demoTracks,
+	sanitizeAlbum,
+	sanitizeTrack,
+} from '@/mocks/demoData';
 
-import type { SpotifyArtist, SpotifyTrack } from '@/types/spotify';
+import type { ArtistDiscography } from '@/types/artists';
+import type {
+	SpotifyAlbum,
+	SpotifyArtist,
+	SpotifyPaginatedResponse,
+	SpotifyTrack,
+} from '@/types/spotify';
+
+export const dynamicParams = false;
+
+export const generateStaticParams = async () =>
+	demoArtists.map((artist) => ({ id: artist.id }));
 
 const Artist = async ({ params }: { params: Promise<{ id: string }> }) => {
 	const { id } = await params;
-	const cookieStore = await cookies();
-	const accessToken = cookieStore.get('access_token')!.value;
 
-	const artistData: SpotifyArtist = await fetchArtistById(id, accessToken);
-
+	const artistData: SpotifyArtist | null =
+		demoArtists.find((artist) => artist.id === id) ?? null;
 	if (!artistData) {
-		return null;
+		redirect('/');
 	}
 
-	const { tracks: topTracks }: { tracks: SpotifyTrack[] } =
-		await fetchArtistTopTracks(id, accessToken);
-
-	const [albums, singles, compilations] = await Promise.all(
-		DISCOGRAPHY_GROUPS.map((group) =>
-			fetchArtistAlbums(id, { limit: 10, groups: group }, accessToken)
+	const topTracks: SpotifyTrack[] = demoTracks
+		.filter((track) =>
+			track.artists.some((artist) => artist.id === artistData!.id)
 		)
-	);
+		.map((track) => sanitizeTrack(track));
+
+	const albumItems: SpotifyAlbum[] = demoAlbums
+		.filter((album) =>
+			album.artists.some((artist) => artist.id === artistData!.id)
+		)
+		.map((album) => sanitizeAlbum(album));
+
+	const baseCollection: SpotifyPaginatedResponse<SpotifyAlbum> = {
+		href: `/api/demo/artists/${artistData.id}/albums`,
+		items: albumItems,
+		limit: albumItems.length,
+		offset: 0,
+		next: null,
+		previous: null,
+		total: albumItems.length,
+	};
+
+	const discography: ArtistDiscography = {
+		albums: baseCollection,
+		singles: { ...baseCollection, items: [] },
+		compilations: { ...baseCollection, items: [] },
+	};
 
 	const featuredItem =
-		albums?.items?.[0] || singles?.items?.[0] || compilations?.items?.[0];
+		discography.albums.items[0] ||
+		discography.singles.items[0] ||
+		discography.compilations.items[0];
 
 	return (
 		<>
@@ -62,7 +92,7 @@ const Artist = async ({ params }: { params: Promise<{ id: string }> }) => {
 				</div>
 				<Discography
 					artistId={artistData.id}
-					data={{ albums, singles, compilations }}
+					data={discography}
 					title="Discography"
 					isExpandable={true}
 					maxItems={7}

@@ -1,40 +1,50 @@
 import React from 'react';
-import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 import PlaylistContainer from '@/components/playlist/PlaylistContainer';
 
-import { fetchPlaylistById } from '@/services/spotify';
+import { demoPlaylist } from '@/mocks/demoData';
 
 import type { SpotifyPlaylist } from '@/types/spotify';
 
+export const dynamicParams = false;
+
+export const generateStaticParams = async () => [{ id: demoPlaylist.id }];
+
 const Playlist = async ({ params }: { params: Promise<{ id: string }> }) => {
 	const { id } = await params;
-	const cookieStore = await cookies();
-	const accessToken = cookieStore.get('access_token')!.value;
 
-	const playlistData: SpotifyPlaylist = await fetchPlaylistById(
-		id,
-		accessToken
-	);
+	let playlistData: SpotifyPlaylist | null = null;
 
-	const { items, ...paginationData } = playlistData.tracks;
+	if (id !== demoPlaylist.id) {
+		redirect('/');
+	}
+	playlistData = demoPlaylist;
+
+	if (!playlistData) {
+		redirect('/');
+	}
+
+	const resolvedPlaylist = playlistData as SpotifyPlaylist;
+
+	const { items, ...paginationData } = resolvedPlaylist.tracks;
 
 	const owner = {
-		id: playlistData.owner.id,
-		displayName: playlistData.owner.display_name,
+		id: resolvedPlaylist.owner.id,
+		displayName: resolvedPlaylist.owner.display_name,
 	};
 
 	return (
 		<PlaylistContainer
 			id={id}
-			name={playlistData.name}
-			uri={playlistData.uri}
-			imageUrl={playlistData.images?.[0]?.url}
-			description={playlistData.description}
+			name={resolvedPlaylist.name}
+			uri={resolvedPlaylist.uri}
+			imageUrl={resolvedPlaylist.images?.[0]?.url}
+			description={resolvedPlaylist.description}
 			owner={owner}
 			tracks={items}
-			totalFollowers={playlistData.followers?.total}
-			totalTracks={playlistData.tracks.total}
+			totalFollowers={resolvedPlaylist.followers?.total}
+			totalTracks={resolvedPlaylist.tracks.total}
 			paginationData={paginationData}
 		/>
 	);

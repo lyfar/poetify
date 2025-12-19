@@ -17,7 +17,7 @@ const Logo = ({ className, light = false, dark = false }: LogoProps) => {
 					: 'text-spotify-green'
 			} ${className}`}
 		>
-			music
+			POET
 			<span
 				className={`font-extralight ${
 					dark
@@ -27,7 +27,7 @@ const Logo = ({ className, light = false, dark = false }: LogoProps) => {
 						: 'text-white'
 				} ${className}`}
 			>
-				mate
+				IFY
 			</span>
 		</span>
 	);

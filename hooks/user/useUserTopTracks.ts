@@ -1,24 +1,21 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useMemo, useState } from 'react';
 
 import type { SpotifyTrack } from '@/types/spotify';
+import { demoTracks, sanitizeTrack } from '@/mocks/demoData';
 
 const useUserTopTracks = () => {
-	const [isLoading, setIsLoading] = useState(true);
-	const [tracks, setTracks] = useState<SpotifyTrack[] | null>(null);
 	const [period, setPeriod] = useState('short_term');
+	const isLoading = false;
 
-	useEffect(() => {
-		const fetchTopTracks = async () => {
-			setIsLoading(true);
-			const response = await axios.get(
-				`/api/me/top/tracks?period=${period}`
-			);
-			const { items } = response.data;
-			setTracks(items);
-			setIsLoading(false);
-		};
-		fetchTopTracks();
+	const tracks: SpotifyTrack[] = useMemo(() => {
+		const items = demoTracks.map((track) => sanitizeTrack(track));
+		if (period === 'short_term') {
+			return items.slice(0, 10);
+		}
+		if (period === 'medium_term') {
+			return items.slice(0, 10).reverse();
+		}
+		return items.slice(0, 10);
 	}, [period]);
 
 	return { isLoading, tracks, period, setPeriod };

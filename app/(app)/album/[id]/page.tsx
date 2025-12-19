@@ -1,20 +1,34 @@
 import React from 'react';
-import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 import AlbumContainer from '@/components/album/AlbumContainer';
 
-import { fetchAlbumById } from '@/services/spotify';
+import { demoAlbums, demoTracks } from '@/mocks/demoData';
 
-import type { SpotifyAlbum } from '@/types/spotify';
+export const dynamicParams = false;
+
+export const generateStaticParams = async () =>
+	demoAlbums.map((album) => ({ id: album.id }));
 
 const Album = async ({ params }: { params: Promise<{ id: string }> }) => {
 	const { id } = await params;
-	const cookieStore = await cookies();
-	const accessToken = cookieStore.get('access_token')!.value;
+	const albumData = demoAlbums.find((album) => album.id === id);
+	if (!albumData) {
+		redirect('/');
+	}
 
-	const albumData: SpotifyAlbum = await fetchAlbumById(id, accessToken);
+	const demoAlbumTracks = demoTracks.filter(
+		(track) => track.album.id === albumData.id
+	);
 
-	const { items, ...paginationData } = albumData.tracks;
+	const paginationData = {
+		href: albumData.tracks.href,
+		limit: demoAlbumTracks.length,
+		offset: 0,
+		next: null,
+		previous: null,
+		total: demoAlbumTracks.length,
+	};
 
 	return (
 		<AlbumContainer
@@ -28,7 +42,7 @@ const Album = async ({ params }: { params: Promise<{ id: string }> }) => {
 			releaseDatePrecision={albumData.release_date_precision}
 			copyrightNotices={albumData.copyrights}
 			totalTracks={albumData.total_tracks}
-			tracks={items}
+			tracks={demoAlbumTracks}
 			paginationData={paginationData}
 		/>
 	);

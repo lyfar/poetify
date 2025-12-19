@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 import type { CategoriesState } from '@/types/categories';
+import { demoCategories } from '@/mocks/demoData';
 
 const initialState: CategoriesState = {
 	isLoading: false,
@@ -11,11 +11,7 @@ const initialState: CategoriesState = {
 
 export const fetchCategories = createAsyncThunk(
 	'categories/fetchCategories',
-	async () => {
-		const response = await axios.get('/api/categories');
-		const data = response.data;
-		return data;
-	}
+	async () => demoCategories
 );
 
 const categoriesSlice = createSlice({

@@ -24,8 +24,8 @@ const FadeIn = ({
 	return (
 		<motion.div
 			className={className}
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
+			initial={{ opacity: 0, x, y }}
+			animate={{ opacity: 1, x: 0, y: 0 }}
 			transition={{ duration, delay }}
 			{...props}
 		>

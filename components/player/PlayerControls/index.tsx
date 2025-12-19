@@ -15,6 +15,7 @@ import usePlayerControls from '@/hooks/player/usePlayerControls';
 
 import { useAppSelector } from '@/redux/hooks';
 import { isUserPremium } from '@/redux/slices/userSlice';
+import { DEMO_MODE } from '@/utils/demo';
 
 const PlayerControls = () => {
 	const {
@@ -30,11 +31,12 @@ const PlayerControls = () => {
 		toggleRepeat,
 	} = usePlayerControls();
 	const userHasPremium = useAppSelector(isUserPremium);
+	const controlsDisabled = !DEMO_MODE && !userHasPremium;
 
 	return (
 		<div
 			className={`flex flex-col gap-6 lg:gap-2 justify-center items-center ${
-				!userHasPremium
+				controlsDisabled
 					? 'opacity-25 pointer-events-none cursor-not-allowed'
 					: ''
 			}`}

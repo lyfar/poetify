@@ -9,7 +9,7 @@ const TrackResults = ({
 }: {
 	tracks: SpotifyPaginatedResponse<SpotifyTrack>;
 }) => {
-	const { items, ...paginationData } = tracks;
+	const { items } = tracks;
 	return <CollectionTracklist type="results" tracks={items} />;
 };
 

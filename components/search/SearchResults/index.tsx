@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 import Loader from '@/components/shared/Loader';
 import Tab from '@/components/shared/Tab';
+import InfoMessage from '@/components/shared/InfoMessage';
 import AllResults from './AllResults';
 import PlaylistResults from './PlaylistResults';
 import AlbumResults from './AlbumResults';
@@ -35,6 +36,11 @@ const SearchResults = ({
 	}
 
 	const { tracks, albums, artists, playlists } = data;
+	const hasAnyResults =
+		tracks.items.length > 0 ||
+		albums.items.length > 0 ||
+		artists.items.length > 0 ||
+		playlists.items.length > 0;
 
 	return (
 		<div className="flex flex-col gap-6 p-4 lg:p-6">
@@ -50,21 +56,25 @@ const SearchResults = ({
 						onClick={() => changeActiveTab(type as SearchTabType)}
 					/>
 				))}
+				</div>
+				{!hasAnyResults ? (
+					<div className="h-[45vh]">
+						<InfoMessage label={`No results for “${query}”.`} />
+					</div>
+				) : activeTab === 'results' ? (
+					<AllResults data={data} />
+				) : activeTab === 'tracks' ? (
+					<TrackResults tracks={tracks} />
+				) : activeTab === 'artists' ? (
+					<ArtistResults artists={artists} />
+				) : activeTab === 'albums' ? (
+					<AlbumResults albums={albums} />
+				) : activeTab === 'playlists' ? (
+					<PlaylistResults playlists={playlists} />
+				) : (
+					<Loader />
+				)}
 			</div>
-			{activeTab === 'results' ? (
-				<AllResults data={data} />
-			) : activeTab === 'tracks' ? (
-				<TrackResults tracks={tracks} />
-			) : activeTab === 'artists' ? (
-				<ArtistResults artists={artists} />
-			) : activeTab === 'albums' ? (
-				<AlbumResults albums={albums} />
-			) : activeTab === 'playlists' ? (
-				<PlaylistResults playlists={playlists} />
-			) : (
-				<Loader />
-			)}
-		</div>
 	);
 };
 

@@ -14,6 +14,7 @@ import { IoIosMusicalNotes, IoIosPlay, IoIosPause } from 'react-icons/io';
 import ExplicitBadge from '../ExplicitBadge';
 
 import useTrackPlayback from '@/hooks/player/useTrackPlayback';
+import { withBasePath } from '@/utils/basePath';
 
 import type { SpotifyAlbum, SpotifyArtist } from '@/types/spotify';
 
@@ -53,7 +54,7 @@ const TracklistItem = ({
 			trackId: id,
 			contextUri,
 			...(uri && { uri }),
-			...(position && { position }),
+			...(typeof position === 'number' ? { position } : {}),
 		});
 
 	const formattedAddedAt = useMemo(() => {
@@ -78,12 +79,13 @@ const TracklistItem = ({
 			onDoubleClick={playTrack}
 		>
 			<div className="hidden md:block text-right">
-				{isNowPlaying ? (
-					<img
-						src="/eq-animated.gif"
-						className="h-4 w-4 ml-2.5 group-hover:hidden"
-					></img>
-				) : (
+					{isNowPlaying ? (
+						<img
+							src={withBasePath('/eq-animated.gif')}
+							alt=""
+							className="h-4 w-4 ml-2.5 group-hover:hidden"
+						></img>
+					) : (
 					<span
 						className={`mr-1 group-hover:hidden ${
 							isActiveTrack
@@ -125,12 +127,13 @@ const TracklistItem = ({
 				) : null}
 				<div className="flex flex-col justify-center truncate">
 					<div className="flex items-center gap-1">
-						{isNowPlaying && (
-							<img
-								src="/eq-animated.gif"
-								className="md:hidden h-3 w-3"
-							></img>
-						)}
+							{isNowPlaying && (
+								<img
+									src={withBasePath('/eq-animated.gif')}
+									alt=""
+									className="md:hidden h-3 w-3"
+								></img>
+							)}
 						<span
 							className={`${
 								isActiveTrack

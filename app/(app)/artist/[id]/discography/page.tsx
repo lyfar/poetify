@@ -1,49 +1,56 @@
 import React from 'react';
-import { cookies } from 'next/headers';
-
-import { DISCOGRAPHY_GROUPS } from '@/constants/discography';
+import { redirect } from 'next/navigation';
 
 import Discography from '@/components/artist/Discography';
 
-import { fetchArtistById, fetchArtistAlbums } from '@/services/spotify';
+import { demoAlbums, demoArtists, sanitizeAlbum } from '@/mocks/demoData';
 
-import type { SpotifyArtist } from '@/types/spotify';
-import type { DiscographyTabType } from '@/types/artists';
+export const dynamicParams = false;
+
+export const generateStaticParams = async () =>
+	demoArtists.map((artist) => ({ id: artist.id }));
 
 const ArtistDiscography = async ({
 	params,
-	searchParams,
 }: {
 	params: Promise<{ id: string }>;
-	searchParams: Promise<{ tab?: DiscographyTabType }>;
 }) => {
 	const { id } = await params;
-	const { tab } = (await searchParams) ?? 'albums';
-	const cookieStore = await cookies();
-	const accessToken = cookieStore.get('access_token')!.value;
-
-	const artistData: SpotifyArtist = await fetchArtistById(id, accessToken);
-
+	const artistData = demoArtists.find((artist) => artist.id === id) ?? null;
 	if (!artistData) {
-		return null;
+		redirect('/');
 	}
 
-	const [albums, singles, compilations] = await Promise.all(
-		DISCOGRAPHY_GROUPS.map((group) =>
-			fetchArtistAlbums(id, { limit: 50, groups: group }, accessToken)
+	const albumItems = demoAlbums
+		.filter((album) =>
+			album.artists.some((artist) => artist.id === artistData.id)
 		)
-	);
+		.map((album) => sanitizeAlbum(album));
 
-	return (
-		<div className="p-4 lg:p-8">
-			<Discography
-				artistId={artistData.id}
-				title={artistData.name}
-				data={{ albums, singles, compilations }}
-				defaultTab={tab}
-			/>
-		</div>
-	);
-};
+	const baseCollection = {
+		href: `/api/demo/artists/${artistData.id}/albums`,
+		items: albumItems,
+		limit: albumItems.length,
+		offset: 0,
+		next: null,
+		previous: null,
+		total: albumItems.length,
+	};
+
+	const albums = baseCollection;
+	const singles = { ...baseCollection, items: [] };
+	const compilations = { ...baseCollection, items: [] };
+
+		return (
+			<div className="p-4 lg:p-8">
+				<Discography
+					artistId={artistData.id}
+					title={artistData.name}
+					data={{ albums, singles, compilations }}
+					defaultTab="albums"
+				/>
+			</div>
+		);
+	};
 
 export default ArtistDiscography;

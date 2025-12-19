@@ -1,29 +1,20 @@
-import { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
+import { useMemo } from 'react';
 
 import type { SpotifyRecentlyPlayedItem } from '@/types/spotify';
+import { demoRecentlyPlayed, sanitizeTrack } from '@/mocks/demoData';
 
 const useRecentlyPlayed = () => {
-	const [isLoading, setIsLoading] = useState(true);
-	const [tracks, setTracks] = useState<SpotifyRecentlyPlayedItem[] | null>(
-		null
+	const isLoading = false;
+	const tracks: SpotifyRecentlyPlayedItem[] = useMemo(
+		() =>
+			demoRecentlyPlayed.map((item) => ({
+				...item,
+				track: sanitizeTrack(item.track),
+			})),
+		[]
 	);
 
-	useEffect(() => {
-		const fetchRecentlyPlayed = async () => {
-			setIsLoading(true);
-			const response = await axios.get('/api/me/recently-played');
-			const { items } = response.data;
-			setTracks(items);
-			setIsLoading(false);
-		};
-		fetchRecentlyPlayed();
-	}, []);
-
 	const albums = useMemo(() => {
-		if (!tracks) {
-			return [];
-		}
 		return [
 			...new Map(
 				tracks.map(({ track }) => [track.album.id, track.album])
@@ -32,9 +23,6 @@ const useRecentlyPlayed = () => {
 	}, [tracks]);
 
 	const artists = useMemo(() => {
-		if (!tracks) {
-			return [];
-		}
 		return [
 			...new Map(
 				tracks.map(({ track }) => [

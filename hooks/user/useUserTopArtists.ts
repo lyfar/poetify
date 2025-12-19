@@ -1,24 +1,20 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useMemo, useState } from 'react';
 
 import type { SpotifyArtist } from '@/types/spotify';
+import { demoTopArtists } from '@/mocks/demoData';
 
 const useUserTopArtists = () => {
-	const [isLoading, setIsLoading] = useState(true);
-	const [artists, setArtists] = useState<SpotifyArtist[] | null>(null);
 	const [period, setPeriod] = useState('short_term');
+	const isLoading = false;
 
-	useEffect(() => {
-		const fetchTopArtists = async () => {
-			setIsLoading(true);
-			const response = await axios.get(
-				`/api/me/top/artists?period=${period}`
-			);
-			const { items } = response.data;
-			setArtists(items);
-			setIsLoading(false);
-		};
-		fetchTopArtists();
+	const artists: SpotifyArtist[] = useMemo(() => {
+		if (period === 'short_term') {
+			return demoTopArtists.slice(0, 10);
+		}
+		if (period === 'medium_term') {
+			return demoTopArtists.slice(0, 10).reverse();
+		}
+		return demoTopArtists.slice(0, 10);
 	}, [period]);
 
 	return { isLoading, artists, period, setPeriod };

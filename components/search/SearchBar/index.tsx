@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { HiMiniMagnifyingGlass } from 'react-icons/hi2';
@@ -8,12 +8,18 @@ const SearchBar = ({ value = '' }: { value?: string }) => {
 	const [query, setQuery] = useState(value);
 	const router = useRouter();
 
+	useEffect(() => {
+		setQuery(value);
+	}, [value]);
+
 	const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (!query.trim()) {
+		const normalized = query.trim();
+		if (!normalized) {
+			router.push('/search');
 			return;
 		}
-		router.push(`/search/${query}`);
+		router.push(`/search?query=${encodeURIComponent(normalized)}`);
 	};
 
 	return (

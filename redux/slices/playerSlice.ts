@@ -3,31 +3,39 @@ import {
 	createAsyncThunk,
 	createSelector,
 } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 import type { PlayerState } from '@/types/player';
 import type { SpotifyRepeatState } from '@/types/spotify';
+import {
+	getDemoPlaybackState,
+	initDemoPlayer,
+	nextDemoTrack,
+	pauseDemoTrack,
+	playDemoTrack,
+	previousDemoTrack,
+	resumeDemoTrack,
+	seekDemoTrack,
+	setDemoRepeatState,
+	setDemoShuffleState,
+	setDemoVolume,
+} from '@/utils/demoPlayer';
 
 const initialState: PlayerState = {
 	deviceId: null,
 	isReady: false,
 	playbackState: null,
 	isLoading: false,
+	hasInteracted: false,
 };
 
 export const fetchPlaybackState = createAsyncThunk(
 	'player/fetchPlaybackState',
-	async () => {
-		const response = await axios.get('/api/player/state');
-		const data = response.data;
-		return data;
-	}
+	async () => getDemoPlaybackState()
 );
 
 export const play = createAsyncThunk(
 	'player/play',
 	async ({
-		deviceId,
 		contextUri,
 		offset,
 	}: {
@@ -35,67 +43,51 @@ export const play = createAsyncThunk(
 		contextUri: string;
 		offset?: { position?: number; uri?: string };
 	}) => {
-		await axios.put(`/api/player/play?device_id=${deviceId}`, {
-			contextUri,
-			...(offset && { offset }),
-		});
+		initDemoPlayer();
+		return playDemoTrack({ contextUri, offset });
 	}
 );
 
 export const pause = createAsyncThunk(
 	'player/pause',
-	async (deviceId: string) => {
-		await axios.put(`/api/player/pause?device_id=${deviceId}`);
-	}
+	async (_deviceId: string) => pauseDemoTrack()
 );
 
 export const resume = createAsyncThunk(
 	'player/resume',
-	async (deviceId: string) => {
-		await axios.put(`/api/player/play?device_id=${deviceId}`);
-	}
+	async (_deviceId: string) => resumeDemoTrack()
 );
 
 export const seek = createAsyncThunk(
 	'player/seek',
-	async (position: number) => {
-		await axios.put(`/api/player/seek?position=${position}`);
-		return position;
-	}
+	async (position: number) => seekDemoTrack(position).progress_ms
 );
 
 export const skipToNext = createAsyncThunk('player/skipToNext', async () => {
-	await axios.post('/api/player/next');
+	return nextDemoTrack();
 });
 
 export const skipToPrevious = createAsyncThunk(
 	'player/skipToPrevious',
-	async () => {
-		await axios.post('/api/player/previous');
-	}
+	async () => previousDemoTrack()
 );
 
 export const setShuffleState = createAsyncThunk(
 	'player/setShuffleState',
-	async (state: boolean) => {
-		await axios.put(`/api/player/shuffle?state=${state}`);
-		return state;
-	}
+	async (state: boolean) => setDemoShuffleState(state).shuffle_state
 );
 
 export const setRepeatState = createAsyncThunk(
 	'player/setRepeatState',
 	async (state: SpotifyRepeatState) => {
-		await axios.put(`/api/player/repeat?state=${state}`);
-		return state;
+		return setDemoRepeatState(state).repeat_state;
 	}
 );
 
 export const setVolume = createAsyncThunk(
 	'player/setVolume',
 	async (volume: number) => {
-		await axios.put(`/api/player/volume?value=${volume}`);
-		return volume;
+		return setDemoVolume(volume).device.volume_percent;
 	}
 );
 
@@ -151,17 +143,44 @@ const playerSlice = createSlice({
 			state.playbackState = action.payload;
 			state.isLoading = false;
 		});
-		builder.addCase(pause.fulfilled, (state) => {
-			if (!state.playbackState) {
-				return;
+		builder.addCase(play.fulfilled, (state, action) => {
+			state.hasInteracted = true;
+			if (action.payload) {
+				state.playbackState = action.payload;
 			}
-			state.playbackState.is_playing = false;
 		});
-		builder.addCase(resume.fulfilled, (state) => {
+		builder.addCase(pause.fulfilled, (state, action) => {
 			if (!state.playbackState) {
 				return;
 			}
-			state.playbackState.is_playing = true;
+			if (action.payload) {
+				state.playbackState = action.payload;
+			} else {
+				state.playbackState.is_playing = false;
+			}
+		});
+		builder.addCase(resume.fulfilled, (state, action) => {
+			state.hasInteracted = true;
+			if (!state.playbackState) {
+				return;
+			}
+			if (action.payload) {
+				state.playbackState = action.payload;
+			} else {
+				state.playbackState.is_playing = true;
+			}
+		});
+		builder.addCase(skipToNext.fulfilled, (state, action) => {
+			state.hasInteracted = true;
+			if (action.payload) {
+				state.playbackState = action.payload;
+			}
+		});
+		builder.addCase(skipToPrevious.fulfilled, (state, action) => {
+			state.hasInteracted = true;
+			if (action.payload) {
+				state.playbackState = action.payload;
+			}
 		});
 		builder.addCase(seek.fulfilled, (state, action) => {
 			if (!state.playbackState) {
@@ -191,10 +210,14 @@ const playerSlice = createSlice({
 });
 
 export const getNowPlaying = createSelector(
-	[(state) => state.player.deviceId, (state) => state.player.playbackState],
-	(deviceId, playbackState) => {
+	[
+		(state) => state.player.deviceId,
+		(state) => state.player.playbackState,
+		(state) => state.player.hasInteracted,
+	],
+	(deviceId, playbackState, hasInteracted) => {
 		if (!!!playbackState) {
-			return { isPlaying: false };
+			return { isPlaying: false, hasInteracted };
 		}
 		return {
 			isPlaying: playbackState.is_playing,
@@ -209,6 +232,7 @@ export const getNowPlaying = createSelector(
 			context: playbackState.context,
 			repeatState: playbackState.repeat_state,
 			shuffleState: playbackState.shuffle_state,
+			hasInteracted,
 		};
 	}
 );

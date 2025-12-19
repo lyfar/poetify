@@ -6,13 +6,12 @@ import { albumMock, albumTracksMock } from '@/mocks/albums';
 
 import StoreProvider from '@/redux/StoreProvider';
 
-import type { Meta, StoryObj } from '@storybook/nextjs';
-import type {
-	SpotifyAlbum,
-	SpotifyPlaylistItem,
-	SpotifyReleaseDatePrecision,
-	SpotifyTrack,
-} from '@/types/spotify';
+	import type { Meta, StoryObj } from '@storybook/nextjs';
+	import type {
+		SpotifyPlaylistItem,
+		SpotifyReleaseDatePrecision,
+		SpotifyTrack,
+	} from '@/types/spotify';
 
 type Story = StoryObj<typeof CollectionTracklist>;
 

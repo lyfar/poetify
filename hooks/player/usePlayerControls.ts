@@ -13,6 +13,7 @@ import {
 } from '@/redux/slices/playerSlice';
 
 import { showToast } from '@/utils/toast';
+import { DEMO_MODE } from '@/utils/demo';
 
 import type { SpotifyRepeatState } from '@/types/spotify';
 
@@ -21,9 +22,10 @@ const usePlayerControls = () => {
 	const { isPlaying, isExternal, device, repeatState, shuffleState } =
 		useAppSelector(getNowPlaying);
 	const userHasPremium = useAppSelector(isUserPremium);
+	const canControl = DEMO_MODE || userHasPremium;
 
 	const handlePause = () => {
-		if (!userHasPremium) {
+		if (!canControl) {
 			showToast('Requires Spotify Premium.');
 			return;
 		}
@@ -31,7 +33,7 @@ const usePlayerControls = () => {
 	};
 
 	const handleResume = () => {
-		if (!userHasPremium) {
+		if (!canControl) {
 			showToast('Requires Spotify Premium.');
 			return;
 		}
@@ -39,7 +41,7 @@ const usePlayerControls = () => {
 	};
 
 	const handleSeek = (position: number) => {
-		if (!userHasPremium) {
+		if (!canControl) {
 			showToast('Requires Spotify Premium.');
 			return;
 		}
@@ -47,7 +49,7 @@ const usePlayerControls = () => {
 	};
 
 	const handleSkipToNext = async () => {
-		if (!userHasPremium) {
+		if (!canControl) {
 			showToast('Requires Spotify Premium.');
 			return;
 		}
@@ -58,7 +60,7 @@ const usePlayerControls = () => {
 	};
 
 	const handleSkipToPrevious = async () => {
-		if (!userHasPremium) {
+		if (!canControl) {
 			showToast('Requires Spotify Premium.');
 			return;
 		}
@@ -69,7 +71,7 @@ const usePlayerControls = () => {
 	};
 
 	const toggleShuffle = () => {
-		if (!userHasPremium) {
+		if (!canControl) {
 			showToast('Requires Spotify Premium.');
 			return;
 		}
@@ -77,7 +79,7 @@ const usePlayerControls = () => {
 	};
 
 	const toggleRepeat = () => {
-		if (!userHasPremium) {
+		if (!canControl) {
 			showToast('Requires Spotify Premium.');
 			return;
 		}
