@@ -15,7 +15,7 @@ import type {
 import { withBasePath } from '@/utils/basePath';
 
 const DEMO_RELEASE_DATE = '2025-12-24';
-const DEMO_DATE_ISO = '2025-12-24T12:00:00.000Z';
+const DEMO_DATE_ISO = '2025-12-24T00:00:00';
 
 const createImages = (baseUrl: string) => {
 	if (baseUrl.startsWith('/')) {
