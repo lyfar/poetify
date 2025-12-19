@@ -18,6 +18,33 @@ import { withBasePath } from '@/utils/basePath';
 
 import type { SpotifyAlbum, SpotifyArtist } from '@/types/spotify';
 
+const shouldEnableSingleTapPlayback = () => {
+	if (typeof window === 'undefined') {
+		return false;
+	}
+
+	if (
+		typeof window.matchMedia === 'function' &&
+		window.matchMedia('(hover: none) and (pointer: coarse)').matches
+	) {
+		return true;
+	}
+
+	if (typeof navigator !== 'undefined' && (navigator.maxTouchPoints ?? 0) > 0) {
+		return true;
+	}
+
+	return false;
+};
+
+const isClickOnInteractiveChild = (target: EventTarget | null) => {
+	const el = target as HTMLElement | null;
+	if (!el) {
+		return false;
+	}
+	return Boolean(el.closest('a,button,input,textarea,select'));
+};
+
 const TracklistItem = ({
 	id,
 	number,
@@ -69,6 +96,23 @@ const TracklistItem = ({
 			: dayjs(addedAt).fromNow();
 	}, [addedAt]);
 
+	const handleSingleTapPlay = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (!shouldEnableSingleTapPlayback()) {
+			return;
+		}
+		if (isClickOnInteractiveChild(e.target)) {
+			return;
+		}
+		playTrack();
+	};
+
+	const handleDoubleClickPlay = () => {
+		if (shouldEnableSingleTapPlayback()) {
+			return;
+		}
+		playTrack();
+	};
+
 	return (
 		<div
 			className={`group h-16 px-2 md:px-4 py-2 ${gridConfig} hover:bg-[#ffffff1a] rounded-md items-center font-funnel ${
@@ -76,7 +120,8 @@ const TracklistItem = ({
 					? 'opacity-30 cursor-not-allowed pointer-events-none'
 					: ''
 			}`}
-			onDoubleClick={playTrack}
+			onClick={handleSingleTapPlay}
+			onDoubleClick={handleDoubleClickPlay}
 		>
 			<div className="hidden md:block text-right">
 					{isNowPlaying ? (
